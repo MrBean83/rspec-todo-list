@@ -1,16 +1,15 @@
 require "rspec"
 
 require_relative "list"
-require_relative "task"
 
 describe List do
 
-  let(:title) {"Henry's todo list"}
-  let(:list) {List.new(title)}
+  let(:task) { double(:task) }
+  let(:list) { List.new('henry todo list') }
 
   describe "#initialize" do
-    it "takes a title for its first argument" do
-      List.new("Pulling dem birdies").should be_an_instance_of List
+    it "should create an instance of List" do
+      list.should be_an_instance_of List
     end
 
     it "requires one argument" do
@@ -28,7 +27,7 @@ describe List do
     end
 
     it "adds a new task to the 'tasks' array" do
-      list.add_task(Task.new("bowling"))
+      list.add_task(task)
       list.tasks.length.should eq(1)
     end
   end
@@ -43,7 +42,8 @@ describe List do
     end
 
     it "should take a given index and complete task at that index" do
-      list.add_task(Task.new('ball so hard'))
+      task.stub(complete!: true)
+      list.add_task(task)
       expect(list.complete_task(0)).to be_true
     end
   end
@@ -58,7 +58,7 @@ describe List do
     end
 
     it "deletes a new task from the 'tasks' array" do
-      list.add_task(Task.new("bowling"))
+      list.add_task(task)
       list.delete_task(0)
       list.tasks.length.should eq(0)
     end
@@ -66,15 +66,16 @@ describe List do
 
   describe "#completed_tasks" do
     it "should return an array of the completed tasks" do
-      list.add_task(Task.new("swimming"))
-      list.complete_task(0)
+      task.stub(complete?: true)
+      list.add_task(task)
       expect(list.completed_tasks.length).to eq(1)
     end
   end
 
   describe "#incomplete_tasks" do
     it "should return an array of the incomplete tasks" do
-      list.add_task(Task.new("swimming"))
+      task.stub(complete?: false)
+      list.add_task(task)
       expect(list.incomplete_tasks.length).to eq(1)
     end
   end
